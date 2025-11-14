@@ -1,71 +1,77 @@
-# lms-ai README
+# LMS Completions
 
-This is the README for your extension "lms-ai". After writing up a brief description, we recommend including the following sections.
-
-## Features
-
-Describe specific features of your extension including screenshots of your extension in action. Image paths are relative to this README file.
-
-For example if there is an image subfolder under your extension project workspace:
-
-\!\[feature X\]\(images/feature-x.png\)
-
-> Tip: Many popular extensions utilize animations. This is an excellent way to show off your extension! We recommend short, focused animations that are easy to follow.
-
-## Requirements
-
-If you have any requirements or dependencies, add a section describing those and how to install and configure them.
-
-## Extension Settings
-
-Include if your extension adds any VS Code settings through the `contributes.configuration` extension point.
-
-For example:
-
-This extension contributes the following settings:
-
-* `myExtension.enable`: Enable/disable this extension.
-* `myExtension.thing`: Set to `blah` to do something.
-
-## Known Issues
-
-Calling out known issues can help limit users opening duplicate issues against your extension.
-
-## Release Notes
-
-Users appreciate release notes as you update your extension.
-
-### 1.0.0
-
-Initial release of ...
-
-### 1.0.1
-
-Fixed issue #.
-
-### 1.1.0
-
-Added features X, Y, and Z.
+**LMS Completions** is a lightweight VS Code extension that provides inline code completions using local AI models powered by **LM Studio** or **Ollama**.  
+It aims to bring fast, privacy-friendly code completion to your editor with zero cloud dependencies.
 
 ---
 
-## Following extension guidelines
+## 🚀 Features
 
-Ensure that you've read through the extensions guidelines and follow the best practices for creating your extension.
+- ⚡ Inline code completions  
+- 🧠 Works with local models (LM Studio or Ollama)  
+- 🌍 Supports **all languages**  
+- 🔒 No data leaves your machine  
+- 🛠 Simple, minimal, fast
 
-* [Extension Guidelines](https://code.visualstudio.com/api/references/extension-guidelines)
+---
 
-## Working with Markdown
+## 📦 Requirements
 
-You can author your README using Visual Studio Code. Here are some useful editor keyboard shortcuts:
+Before using the extension, make sure you have:
 
-* Split the editor (`Cmd+\` on macOS or `Ctrl+\` on Windows and Linux).
-* Toggle preview (`Shift+Cmd+V` on macOS or `Shift+Ctrl+V` on Windows and Linux).
-* Press `Ctrl+Space` (Windows, Linux, macOS) to see a list of Markdown snippets.
+### Option A — LM Studio (recommended)
+1. Download **LM Studio**  
+2. Download the model:  
+   **`qwen2.5-coder-0.5b-instruct`**  
+3. Load the model inside LM Studio  
+4. Run LM Studio’s local server
 
-## For more information
+### Option B — Ollama
+1. Install **Ollama**  
+2. Pull and run a supported model  
+3. Ensure the Ollama server is running
 
-* [Visual Studio Code's Markdown Support](http://code.visualstudio.com/docs/languages/markdown)
-* [Markdown Syntax Reference](https://help.github.com/articles/markdown-basics/)
+---
 
-**Enjoy!**
+## 🧩 Setup
+
+The extension currently requires **no configuration**.  
+Once LM Studio or Ollama is running, LMS Completions will automatically attempt to connect and provide inline completions.
+
+- No settings  
+- No commands  
+- Just install and start coding
+
+---
+
+## 📝 Known Limitations
+
+- Completions are **not streamed yet**  
+- Only basic inline completions at this stage
+
+---
+
+## 🛠 Roadmap
+
+- Streaming completions  
+- Model selection  
+- Custom API base configuration  
+- Additional providers  
+- Settings UI
+
+---
+
+## 🤝 Contributing
+
+Contributions are **welcome and encouraged**!  
+Whether you want to fix a bug, improve completion quality, add new features, or help polish the codebase — you're invited.
+
+👉 GitHub Repository: **https://github.com/dudes-company/lms-ai**
+
+Feel free to submit issues, feature requests, and pull requests.
+
+---
+
+## 📄 License
+
+**MIT License**
