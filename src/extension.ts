@@ -18,7 +18,7 @@ async function callModel(prompt: string): Promise<string> {
         prompt,
         max_tokens: 64,
         temperature: 0.5,
-        stop: ['```']
+        stop: ['```'] 
       })
     });
 
@@ -40,7 +40,7 @@ async function callModel(prompt: string): Promise<string> {
 
 
 // -------------------------------
-// 4. Full Inline Completion Provider
+// 4. Full Inline Completion Provider 
 // -------------------------------
 export function activate(context: vscode.ExtensionContext) {
   console.log('✅ LMS AI (Inline Completion) activated');

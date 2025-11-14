@@ -1,13 +1,14 @@
 {
-  "name": "lms-ai",
-  "displayName": "LMS AI",
+  "name": "lms-completion",
+  "displayName": "LMS Completion",
   "description": "a local auto-completion",
   "version": "0.0.1",
   "engines": {
     "vscode": "^1.106.0"
   },
+  "repository":"https://github.com/dudes-company/lms-completion",
   "categories": [
-    "Other"
+    "AI"
   ],
 "activationEvents": ["*"],
   "main": "./dist/extension.js",
