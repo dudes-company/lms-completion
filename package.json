@@ -1,18 +1,105 @@
 {
   "name": "lms-completion",
   "displayName": "LMS Completion",
-  "description": "a local auto-completion",
+  "description": "Local code generation using LM Studio.",
   "version": "0.0.1",
+  "publisher": "dude-productions",
+  "repository": "https://github.com/dudes-company/lms-completion",
+
   "engines": {
     "vscode": "^1.106.0"
   },
-  "repository":"https://github.com/dudes-company/lms-completion",
-  "categories": [
-    "AI"
-  ],
-"activationEvents": ["*"],
+
+  "categories": ["AI", "Programming Languages"],
+
   "main": "./dist/extension.js",
-  "contributes": {},
+
+  "activationEvents": [
+    "onCommand:lmstudio.generateCode"
+  ],
+
+  "contributes": {
+    "commands": [
+      {
+        "command": "lmstudio.generateCode",
+        "title": "LM Studio: Generate Code"
+      }
+    ],
+
+    "configuration": {
+      "title": "LM Studio Settings",
+      "properties": {
+        "lmstudio.endpoint": {
+          "type": "string",
+          "default": "http://127.0.0.1:1234",
+          "description": "Base URL for LM Studio. DO NOT include /v1/chat/completions — the extension appends it automatically."
+        },
+
+        "lmstudio.model": {
+          "type": "string",
+          "default": "",
+          "description": "Model name to use. Leave empty to use the active model in LM Studio."
+        },
+
+        "lmstudio.maxTokens": {
+          "type": "number",
+          "default": 512,
+          "minimum": 1,
+          "maximum": 4096,
+          "description": "Max tokens to generate."
+        },
+
+        "lmstudio.temperature": {
+          "type": "number",
+          "default": 0.7,
+          "minimum": 0,
+          "maximum": 2,
+          "description": "Sampling temperature."
+        },
+
+        "lmstudio.timeout": {
+          "type": "number",
+          "default": 60000,
+          "minimum": 1000,
+          "maximum": 300000,
+          "description": "Timeout for LM Studio requests (ms)."
+        },
+
+        "lmstudio.retries": {
+          "type": "number",
+          "default": 1,
+          "minimum": 0,
+          "maximum": 10,
+          "description": "Number of retry attempts if the request fails."
+        },
+
+        "lmstudio.debounceMs": {
+          "type": "number",
+          "default": 500,
+          "minimum": 0,
+          "maximum": 5000,
+          "description": "Debounce delay in milliseconds for actions."
+        },
+
+        "lmstudio.contextLines": {
+          "type": "number",
+          "default": 50,
+          "minimum": 1,
+          "maximum": 1000,
+          "description": "Number of lines around cursor to include as file context."
+        },
+
+        "lmstudio.maxFileReadChars": {
+          "type": "number",
+          "default": 1200,
+          "minimum": 100,
+          "maximum": 200000,
+          "description": "Maximum characters to read per file when collecting project context."
+        }
+      }
+    }
+  },
+
   "scripts": {
     "vscode:prepublish": "npm run package",
     "compile": "webpack",
@@ -24,17 +111,22 @@
     "lint": "eslint src",
     "test": "vscode-test"
   },
+
   "devDependencies": {
-    "@types/vscode": "^1.106.0",
     "@types/mocha": "^10.0.10",
     "@types/node": "22.x",
-    "typescript-eslint": "^8.46.3",
-    "eslint": "^9.39.1",
-    "typescript": "^5.9.3",
-    "ts-loader": "^9.5.4",
-    "webpack": "^5.102.1",
-    "webpack-cli": "^6.0.1",
+    "@types/vscode": "^1.106.0",
     "@vscode/test-cli": "^0.0.12",
-    "@vscode/test-electron": "^2.5.2"
+    "@vscode/test-electron": "^2.5.2",
+    "eslint": "^9.39.1",
+    "ts-loader": "^9.5.4",
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.46.3",
+    "webpack": "^5.102.1",
+    "webpack-cli": "^6.0.1"
+  },
+
+  "dependencies": {
+    "@mlc-ai/web-tokenizers": "^0.1.6"
   }
 }

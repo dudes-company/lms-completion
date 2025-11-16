@@ -12,6 +12,7 @@ It aims to bring fast, privacy-friendly code completion to your editor with zero
 - 🌍 Supports **all languages**  
 - 🔒 No data leaves your machine  
 - 🛠 Simple, minimal, fast
+- 📃 reads the whole project
 
 ---
 
@@ -36,18 +37,18 @@ Before using the extension, make sure you have:
 ## 🧩 Setup
 
 The extension currently requires **no configuration**.  
-Once LM Studio or Ollama is running, LMS Completions will automatically attempt to connect and provide inline completions.
+Once LM Studio or Ollama is running
 
-- No settings  
-- No commands  
-- Just install and start coding
+- Selecte a Code  
+- Run **LM Studio: Generate Code** command
+- Enjoy 🥹
 
 ---
 
 ## 📝 Known Limitations
 
 - Completions are **not streamed yet**  
-- Only basic inline completions at this stage
+
 
 ---
 
