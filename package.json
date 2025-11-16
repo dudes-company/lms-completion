@@ -2,7 +2,7 @@
   "name": "lms-completion",
   "displayName": "LMS Completion",
   "description": "Local code generation using LM Studio.",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "publisher": "dude-productions",
   "repository": "https://github.com/dudes-company/lms-completion",
 
