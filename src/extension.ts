@@ -13,6 +13,7 @@ import { readProjectContext } from './functions/read-project';
 import { getConfig, refreshConfig } from './config';
 import { GhostCompletionProvider } from './inline-completion-provider';
 import { cleanOutput } from './functions/clean-output';
+import { generationPrompt } from './prompts';
 
 export function activate(context: vscode.ExtensionContext) {
   vscode.window.showInformationMessage('LM Studio extension activated');
@@ -105,22 +106,8 @@ function getCurrentFileContext(editor: vscode.TextEditor, contextLines = 50): st
 }
 
 function createPrompt(projectContext: string, currentFileContext: string, selectedCode: string): string {
-  return `You are an expert developer. Replace the selected code with better, cleaner, or fixed code that perfectly fits this project.
-
-PROJECT CONTEXT:
-${projectContext}
-
-CURRENT FILE SNIPPET:
-${currentFileContext}
-
-SELECTED CODE TO REPLACE:
-${selectedCode}
-
-INSTRUCTIONS:
-- Output ONLY the raw code, no explanations, no markdown fences,no comments in code, no extra text.
-- Match the exact coding style and formatting of the surrounding code.
-- Make it syntactically correct and ready to run.`;
-}
+  return generationPrompt(projectContext,currentFileContext,selectedCode); 
+ }
 
 // ──────────────────────── LM Studio API ────────────────────────
 
@@ -142,7 +129,7 @@ async function callLMStudio(prompt: string, config: any): Promise<string> {
   const body = {
     model: config.model || undefined,
     messages: [
-      { role: 'system', content: 'You are a helpful code assistant. Respond with only code. no comment in code.' },
+      { role: 'system', content: 'You are a helpful code assistant. Respond with only code. No comment in code. No extra text or explanations. no triple back stiks \`\`\`' },
       { role: 'user', content: prompt },
     ],
     max_tokens: config.maxTokens,

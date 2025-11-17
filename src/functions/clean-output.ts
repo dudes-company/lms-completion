@@ -15,8 +15,9 @@ export function cleanOutput(raw: string): string {
 
   // Step 3: Deduplicate near-identical consecutive blocks
   const dedupedLines = deduplicateSimilarBlocks(normalizedLines);
+  
 
-  return dedupedLines.join('\n').trim() + '\n';
+  return dedupedLines.join('\n').trim();
 }
 
 // ──────────────────────────────────────────────────
