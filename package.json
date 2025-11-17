@@ -2,22 +2,20 @@
   "name": "lms-completion",
   "displayName": "LMS Completion",
   "description": "Local code generation using LM Studio.",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "publisher": "dude-productions",
   "repository": "https://github.com/dudes-company/lms-completion",
-
   "engines": {
     "vscode": "^1.106.0"
   },
-
-  "categories": ["AI", "Programming Languages"],
-
-  "main": "./dist/extension.js",
-
-  "activationEvents": [
-    "onCommand:lmstudio.generateCode"
+  "categories": [
+    "AI",
+    "Programming Languages"
   ],
-
+  "main": "./dist/extension.js",
+  "activationEvents": [
+    "onStartupFinished"
+  ],
   "contributes": {
     "commands": [
       {
@@ -25,22 +23,24 @@
         "title": "LM Studio: Generate Code"
       }
     ],
-
     "configuration": {
       "title": "LM Studio Settings",
       "properties": {
+        "lmstudio.inlineEnabled": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable ghost/gray inline completions"
+        },
         "lmstudio.endpoint": {
           "type": "string",
           "default": "http://127.0.0.1:1234",
           "description": "Base URL for LM Studio. DO NOT include /v1/chat/completions — the extension appends it automatically."
         },
-
         "lmstudio.model": {
           "type": "string",
           "default": "",
           "description": "Model name to use. Leave empty to use the active model in LM Studio."
         },
-
         "lmstudio.maxTokens": {
           "type": "number",
           "default": 512,
@@ -48,7 +48,6 @@
           "maximum": 4096,
           "description": "Max tokens to generate."
         },
-
         "lmstudio.temperature": {
           "type": "number",
           "default": 0.7,
@@ -56,7 +55,6 @@
           "maximum": 2,
           "description": "Sampling temperature."
         },
-
         "lmstudio.timeout": {
           "type": "number",
           "default": 60000,
@@ -64,7 +62,6 @@
           "maximum": 300000,
           "description": "Timeout for LM Studio requests (ms)."
         },
-
         "lmstudio.retries": {
           "type": "number",
           "default": 1,
@@ -72,7 +69,6 @@
           "maximum": 10,
           "description": "Number of retry attempts if the request fails."
         },
-
         "lmstudio.debounceMs": {
           "type": "number",
           "default": 500,
@@ -80,7 +76,6 @@
           "maximum": 5000,
           "description": "Debounce delay in milliseconds for actions."
         },
-
         "lmstudio.contextLines": {
           "type": "number",
           "default": 50,
@@ -88,7 +83,6 @@
           "maximum": 1000,
           "description": "Number of lines around cursor to include as file context."
         },
-
         "lmstudio.maxFileReadChars": {
           "type": "number",
           "default": 1200,
@@ -99,7 +93,6 @@
       }
     }
   },
-
   "scripts": {
     "vscode:prepublish": "npm run package",
     "compile": "webpack",
@@ -111,8 +104,8 @@
     "lint": "eslint src",
     "test": "vscode-test"
   },
-
   "devDependencies": {
+    "@types/difflib": "^0.2.7",
     "@types/mocha": "^10.0.10",
     "@types/node": "22.x",
     "@types/vscode": "^1.106.0",
@@ -125,8 +118,8 @@
     "webpack": "^5.102.1",
     "webpack-cli": "^6.0.1"
   },
-
   "dependencies": {
-    "@mlc-ai/web-tokenizers": "^0.1.6"
+    "@mlc-ai/web-tokenizers": "^0.1.6",
+    "difflib": "^0.2.4"
   }
 }
