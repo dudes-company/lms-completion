@@ -13,7 +13,7 @@ import { readProjectContext } from './functions/read-project';
 import { getConfig, refreshConfig } from './config';
 import { GhostCompletionProvider } from './inline-completion-provider';
 import { cleanOutput } from './functions/clean-output';
-import { generationPrompt } from './prompts';
+import { generationPrompt, systemPrompt } from './prompts';
 
 export function activate(context: vscode.ExtensionContext) {
   vscode.window.showInformationMessage('LM Studio extension activated');
@@ -34,6 +34,7 @@ export function activate(context: vscode.ExtensionContext) {
       }
     })
   );
+
 
   const disposable = vscode.commands.registerCommand('lmstudio.generateCode', async () => {
     const editor = vscode.window.activeTextEditor;
@@ -81,6 +82,9 @@ export function activate(context: vscode.ExtensionContext) {
     );
   });
 
+  vscode.commands.registerCommand("ghost.triggerInline", () => {
+    vscode.commands.executeCommand("editor.action.inlineSuggest.trigger");
+  });
   context.subscriptions.push(disposable);
 }
 
@@ -106,8 +110,8 @@ function getCurrentFileContext(editor: vscode.TextEditor, contextLines = 50): st
 }
 
 function createPrompt(projectContext: string, currentFileContext: string, selectedCode: string): string {
-  return generationPrompt(projectContext,currentFileContext,selectedCode); 
- }
+  return generationPrompt(projectContext, currentFileContext, selectedCode);
+}
 
 // ──────────────────────── LM Studio API ────────────────────────
 
@@ -129,12 +133,16 @@ async function callLMStudio(prompt: string, config: any): Promise<string> {
   const body = {
     model: config.model || undefined,
     messages: [
-      { role: 'system', content: 'You are a helpful code assistant. Respond with only code. No comment in code. No extra text or explanations. no triple back stiks \`\`\`' },
+      { role: 'system', content: systemPrompt },
       { role: 'user', content: prompt },
     ],
-    max_tokens: config.maxTokens,
-    temperature: config.temperature,
+    max_tokens: config.maxTokens || 1024,
+    temperature: config.temperature || 0.0,
     stream: false,
+    top_p: 1.0,
+    top_k: 1,
+    repeat_penalty: 1.1
+
   };
 
   const controller = new AbortController();

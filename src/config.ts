@@ -27,7 +27,7 @@ export function getConfig(): Config {
     cachedConfig = {
         endpoint: endpointBase,
         model: c.get<string>('model') || '',
-        maxTokens: Number(c.get<number>('maxTokens') ?? 512),
+        maxTokens: Number(c.get<number>('maxTokens') ?? 1024),
         temperature: Number(c.get<number>('temperature') ?? 0.7),
         timeout: Number(c.get<number>('timeout') ?? 60000),
         retries: Number(c.get<number>('retries') ?? 1),

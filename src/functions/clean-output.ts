@@ -2,51 +2,88 @@
 import * as difflib from 'difflib';
 
 /**
- * Smart cleanup + deduplication for LM Studio output
+ * Strict: return ALL code blocks merged
+ * - Removes <think>...</think>
+ * - Removes ALL comments inside code
+ * - Normalizes & deduplicates
  */
 export function cleanOutput(raw: string): string {
   if (!raw) return '';
 
-  // Step 1: Extract code from markdown (if any)
-  const codeOnly = extractCodeFromMarkdown(raw);
+  // Remove <think> ... </think>
+  const withoutThink = removeThinkBlocks(raw);
 
-  // Step 2: Split into logical lines (preserve intentional empty lines, collapse runs of blanks)
-  const normalizedLines = normalizeLines(codeOnly);
+  // Extract ALL code blocks (merged)
+  const code = extractAllCodeBlocks(withoutThink);
 
-  // Step 3: Deduplicate near-identical consecutive blocks
+  // Remove ALL comments
+  const noComments = removeComments(code);
+
+  // Normalize lines
+  const normalizedLines = normalizeLines(noComments);
+
+  // Deduplicate repeated blocks
   const dedupedLines = deduplicateSimilarBlocks(normalizedLines);
-  
 
   return dedupedLines.join('\n').trim();
 }
 
 // ──────────────────────────────────────────────────
+// REMOVE THINK BLOCKS
+// ──────────────────────────────────────────────────
 
-function extractCodeFromMarkdown(text: string): string {
-  const block = text.match(/```[\w]*\n([\s\S]*?)\n```/);
-  if (block) return block[1];
-
-  // Fallback: drop common explanation prefixes
-  const lines = text.split('\n');
-  const cutoffIdx = lines.findIndex(line =>
-    /^(Here.|Explanation|Note|Solution|Answer|Improved|Fixed)/i.test(line.trim())
-  );
-  return (cutoffIdx === -1 ? lines : lines.slice(0, cutoffIdx)).join('\n');
+function removeThinkBlocks(input: string): string {
+  return input.replace(/<think>[\s\S]*?<\/think>/gi, '');
 }
+
+// ──────────────────────────────────────────────────
+// EXTRACT *ALL* CODE BLOCKS (MERGED)
+// ──────────────────────────────────────────────────
+
+function extractAllCodeBlocks(text: string): string {
+  const matches = [...text.matchAll(/```[\w-]*\n([\s\S]*?)```/g)];
+
+  if (matches.length === 0) return '';
+
+  return matches
+    .map(m => m[1].trim())
+    .join('\n\n'); // merge with a blank line
+}
+
+// ──────────────────────────────────────────────────
+// REMOVE ALL COMMENTS INSIDE CODE
+// Supports: //  /* */  /** */  #  --  <!-- -->
+// ──────────────────────────────────────────────────
+
+function removeComments(code: string): string {
+  return code
+    .replace(/\/\/.*$/gm, '')           // JS/TS/C inline
+    .replace(/\/\*[\s\S]*?\*\//g, '')   // block & JSDoc
+    .replace(/^\s*#.*$/gm, '')          // python/bash
+    .replace(/^\s*--.*$/gm, '')         // SQL
+    .replace(/<!--[\s\S]*?-->/g, '')    // HTML comments
+    .trim();
+}
+
+// ──────────────────────────────────────────────────
+// NORMALIZATION (trim + collapse blank lines)
+// ──────────────────────────────────────────────────
 
 function normalizeLines(code: string): string[] {
   return code
     .split('\n')
-    .map(line => line.trimEnd()) // keep indent, only trim trailing spaces
+    .map(line => line.trimEnd())
+    .map(line => line.trim()) // remove leading indentation
     .reduce((acc: string[], line) => {
-      // Collapse multiple blank lines into one (but keep single intentional blanks)
-      if (line === '' && acc.length > 0 && acc[acc.length - 1] === '') {
-        return acc;
-      }
+      if (line === '' && acc.at(-1) === '') return acc;
       acc.push(line);
       return acc;
     }, []);
 }
+
+// ──────────────────────────────────────────────────
+// DEDUPLICATION
+// ──────────────────────────────────────────────────
 
 function deduplicateSimilarBlocks(lines: string[]): string[] {
   if (lines.length === 0) return lines;
@@ -65,16 +102,14 @@ function deduplicateSimilarBlocks(lines: string[]): string[] {
   for (const line of lines) {
     currentBlock.push(line);
 
-    // Try to detect block boundaries (empty line or significant indent change)
-    if (line === '' || /^\s*$/.test(line)) {
+    if (line.trim() === '') {
       const blockKey = currentBlock.join('\n');
       const similarity = lastBlockKey
         ? new difflib.SequenceMatcher(null, lastBlockKey, blockKey).ratio()
         : 0;
 
-      // If this block is ~90% similar to the previous one → skip it
-      if (similarity > 0.90) {
-        currentBlock = []; // discard duplicate
+      if (similarity > 0.9) {
+        currentBlock = []; // skip duplicate
       } else {
         flushBlock();
         lastBlockKey = blockKey;
@@ -82,6 +117,6 @@ function deduplicateSimilarBlocks(lines: string[]): string[] {
     }
   }
 
-  flushBlock(); // don't forget the last one
+  flushBlock();
   return result;
 }

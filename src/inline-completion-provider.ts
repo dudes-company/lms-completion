@@ -14,12 +14,11 @@ export class GhostCompletionProvider implements vscode.InlineCompletionItemProvi
     const config = getConfig();
     if (!config.inlineEnabled) return null;
 
-    // NEW: Only trigger when cursor is at the END of the current line
     const currentLine = document.lineAt(position.line);
-    if (position.character !== currentLine.text.length) {
-      return null; // Cursor is in the middle or beginning → no ghost completion
-    }
 
+    if (position.character !== currentLine.text.length) {
+      return null;
+    }
     // Optional: Still respect manual trigger (Ctrl+Space etc.), but keep auto-trigger strict
     if (context.triggerKind === vscode.InlineCompletionTriggerKind.Automatic) {
       // Only auto-trigger if we're truly at line end and last char was typed (not navigation)
@@ -34,7 +33,7 @@ export class GhostCompletionProvider implements vscode.InlineCompletionItemProvi
     this.controller = new AbortController();
 
     const before = document.getText(new vscode.Range(new vscode.Position(0, 0), position));
-    
+
     // Much better prompt for "continue from end of line" behavior
     const prompt = `${before}`;
 
@@ -45,12 +44,12 @@ export class GhostCompletionProvider implements vscode.InlineCompletionItemProvi
         body: JSON.stringify({
           model: config.model,
           prompt,
-          max_tokens: 256,
+          max_tokens: 1024,
           temperature: 0.1,
           stream: false,
-          stop: ['\n\n', '```',"\n", '\n#', '\n// TODO', '\n<!--'],
-          presence_penalty: 0.3,
-          frequency_penalty: 0.3,
+          stop: ['\n\n', '```', "\n", '\n#', '\n// TODO', '\n<!--',],
+          presence_penalty: 0.1,
+          frequency_penalty: 0.1,
         }),
         signal: this.controller.signal,
       });
@@ -61,10 +60,6 @@ export class GhostCompletionProvider implements vscode.InlineCompletionItemProvi
       let completion = data.choices[0]?.text || '';
 
       if (!completion.trim()) return null;
-
-      // Aggressive cleanup: remove any leading/trailing junk and prevent mid-line breaks
-      completion = cleanOutput(completion);
-
       // Extra safety: never return something that starts with a newline if we're at line end
       // (this prevents double line breaks)
       if (completion.startsWith('\n')) {
@@ -72,7 +67,7 @@ export class GhostCompletionProvider implements vscode.InlineCompletionItemProvi
       }
 
       if (!completion) return null;
-
+      
       return [
         new vscode.InlineCompletionItem(completion, new vscode.Range(position, position))
       ];

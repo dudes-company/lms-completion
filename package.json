@@ -2,7 +2,7 @@
   "name": "lms-completion",
   "displayName": "LMS Completion",
   "description": "Local code generation using LM Studio.",
-  "version": "0.0.3",
+  "version": "1.0.1",
   "publisher": "dude-productions",
   "repository": "https://github.com/dudes-company/lms-completion",
   "engines": {
@@ -17,6 +17,13 @@
     "onStartupFinished"
   ],
   "contributes": {
+     "keybindings": [
+    {
+      "command": "lmstudio.generateCode",
+      "key": "ctrl+down",
+      "when": "editorTextFocus"
+    }
+  ],
     "commands": [
       {
         "command": "lmstudio.generateCode",
@@ -43,14 +50,14 @@
         },
         "lmstudio.maxTokens": {
           "type": "number",
-          "default": 512,
+          "default": 4096,
           "minimum": 1,
           "maximum": 4096,
           "description": "Max tokens to generate."
         },
         "lmstudio.temperature": {
           "type": "number",
-          "default": 0.7,
+          "default": 0.0,
           "minimum": 0,
           "maximum": 2,
           "description": "Sampling temperature."
@@ -85,9 +92,9 @@
         },
         "lmstudio.maxFileReadChars": {
           "type": "number",
-          "default": 1200,
-          "minimum": 100,
-          "maximum": 200000,
+          "default": 1024,
+          "minimum": 128,
+          "maximum": 2048,
           "description": "Maximum characters to read per file when collecting project context."
         }
       }

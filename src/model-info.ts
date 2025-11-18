@@ -46,7 +46,7 @@ export async function getModelMaxChars(): Promise<number> {
 
     // Extract real context length
     const maxTokens = loadedModel.context_length || loadedModel.max_tokens || 8192;
-    const safeChars = Math.floor(maxTokens * 3.6 * 0.75); // ~75% headroom
+    const safeChars = Math.floor(maxTokens * 3.6 * 0.75)/0.2; // ~75% headroom
 
     cachedModelInfo = {
       maxChars: safeChars,
