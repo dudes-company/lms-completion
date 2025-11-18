@@ -2,8 +2,9 @@
   "name": "lms-completion",
   "displayName": "LMS Completion",
   "description": "Local code generation using LM Studio.",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "publisher": "dude-productions",
+  "icon": "extension-icon.png",
   "repository": "https://github.com/dudes-company/lms-completion",
   "engines": {
     "vscode": "^1.106.0"
